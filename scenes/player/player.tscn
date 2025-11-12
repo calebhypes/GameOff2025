@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://y36m8neusfdf"]
+
+[ext_resource type="Script" uid="uid://ceadac1b5n3wn" path="res://scenes/player/player.gd" id="1_8afob"]
+[ext_resource type="PackedScene" uid="uid://dnw7ji3nugbqw" path="res://scenes/weapons/sound_wave.tscn" id="2_dovo2"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gmlin"]
+radius = 8.0
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_8afob")
+wave_scene = ExtResource("2_dovo2")
+
+[node name="BodySprite" type="ColorRect" parent="."]
+offset_left = -8.0
+offset_top = -16.0
+offset_right = 8.0
+offset_bottom = 16.0
+color = Color(0, 0.60112286, 0.12244963, 1)
+
+[node name="AimPivot" type="Node2D" parent="."]
+
+[node name="ShootPoint" type="Marker2D" parent="AimPivot"]
+position = Vector2(28, 0)
+
+[node name="WeaponSprite" type="ColorRect" parent="AimPivot"]
+offset_left = 16.0
+offset_right = 36.0
+offset_bottom = 6.0
+color = Color(0.38870436, 1, 0.8240922, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_gmlin")
