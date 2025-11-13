@@ -1,8 +1,21 @@
-[gd_scene load_steps=2 format=3 uid="uid://bm5p6hcm2uox"]
+[gd_scene load_steps=4 format=3 uid="uid://bm5p6hcm2uox"]
 
 [ext_resource type="PackedScene" uid="uid://y36m8neusfdf" path="res://scenes/player/player.tscn" id="1_jbqir"]
+[ext_resource type="PackedScene" uid="uid://2yvdod84q2jt" path="res://scenes/enemies/enemy_basic.tscn" id="2_yautc"]
+[ext_resource type="PackedScene" uid="uid://078g68whmboo" path="res://scenes/ui/hud.tscn" id="3_fr1um"]
 
 [node name="TestLevel" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1_jbqir")]
 position = Vector2(-2, 1)
+
+[node name="Enemy" parent="." instance=ExtResource("2_yautc")]
+position = Vector2(113, 131)
+
+[node name="Enemy2" parent="." instance=ExtResource("2_yautc")]
+position = Vector2(289, 17)
+
+[node name="Enemy3" parent="." instance=ExtResource("2_yautc")]
+position = Vector2(259, 113)
+
+[node name="HUD" parent="." instance=ExtResource("3_fr1um")]

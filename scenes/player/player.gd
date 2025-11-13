@@ -2,18 +2,52 @@ extends CharacterBody2D
 
 @export var speed: float = 300.00
 @export var wave_scene: PackedScene
+@export var current_weapon_strength: int = 1 # Change in Inspector to test
+@export var max_health: float = 100.0
 
 @onready var shoot_point = $AimPivot/ShootPoint
 @onready var body_sprite = $BodySprite
 @onready var aim_pivot = $AimPivot
 
+var hud: CanvasLayer = null
 var input_vector: = Vector2.ZERO
 var last_input_vector: = Vector2.ZERO
+var health: float = 100.0
 
 func _ready() -> void:
+	add_to_group("player")
+	await get_tree().process_frame
+	
+	hud = get_tree().get_first_node_in_group("hud")
+	health = max_health
+	
+	if hud and hud.has_method("update_health"):
+		hud.update_health(health, max_health)
+	
 	print("AimPivot: ", aim_pivot)
 	print("ShootPoint: ", shoot_point)
 	print("BodySprite: ", body_sprite)
+
+func take_damage(amount: float) -> void:
+	health -= amount
+	# TODO: Health counter
+	print("Player took ", amount, " gamage. Health: ", health)
+	
+	if hud and hud.has_method("update_health"):
+		hud.update_health(health, max_health)
+	
+	# Flash red
+	modulate = Color.RED
+	await get_tree().create_timer(0.1).timeout
+	modulate = Color.WHITE
+	
+	if health <= 0:
+		die()
+
+func die() -> void:
+	print("Player died!")
+	# TODO: Game over screen
+	get_tree().reload_current_scene()
 
 func _physics_process(delta: float) -> void:
 	input_vector = Input.get_vector("move_left", "move_right", "move_up", "move_down")
@@ -39,8 +73,15 @@ func shoot() -> void:
 		return
 	
 	var wave = wave_scene.instantiate()
-	get_parent().add_child(wave)
-	wave.global_position = shoot_point.global_position
-	
 	var shoot_direction = (get_global_mouse_position() - global_position).normalized()
 	wave.direction = shoot_direction
+	wave.wave_strength = current_weapon_strength
+	print('Wave Strength: ', wave.wave_strength)
+	
+	wave.shooter = self
+	wave.team = "player"
+	
+	wave.add_to_group("sound_waves")
+	
+	get_parent().add_child(wave)
+	wave.global_position = shoot_point.global_position

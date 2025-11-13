@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://dnw7ji3nugbqw"]
+[gd_scene load_steps=4 format=3 uid="uid://dnw7ji3nugbqw"]
 
 [ext_resource type="Script" uid="uid://dwaphpprylc07" path="res://scenes/weapons/sound_wave.gd" id="1_5rp8j"]
 [ext_resource type="Texture2D" uid="uid://6qsnn6npl8v5" path="res://assets/sprites/test-wave.png" id="2_sko2j"]
@@ -7,9 +7,6 @@
 blend_mode = 1
 light_mode = 1
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_sko2j"]
-radius = 11.0
-
 [node name="SoundWave" type="Area2D"]
 script = ExtResource("1_5rp8j")
 
@@ -17,7 +14,3 @@ script = ExtResource("1_5rp8j")
 material = SubResource("CanvasItemMaterial_sko2j")
 position = Vector2(-8, 0)
 texture = ExtResource("2_sko2j")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-6, 0)
-shape = SubResource("CircleShape2D_sko2j")

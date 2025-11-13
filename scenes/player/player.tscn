@@ -4,29 +4,34 @@
 [ext_resource type="PackedScene" uid="uid://dnw7ji3nugbqw" path="res://scenes/weapons/sound_wave.tscn" id="2_dovo2"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gmlin"]
-radius = 8.0
+radius = 6.0
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_8afob")
 wave_scene = ExtResource("2_dovo2")
 
 [node name="BodySprite" type="ColorRect" parent="."]
-offset_left = -8.0
-offset_top = -16.0
-offset_right = 8.0
-offset_bottom = 16.0
+offset_left = -6.0
+offset_top = -12.0
+offset_right = 6.0
+offset_bottom = 12.0
 color = Color(0, 0.60112286, 0.12244963, 1)
 
 [node name="AimPivot" type="Node2D" parent="."]
 
 [node name="ShootPoint" type="Marker2D" parent="AimPivot"]
-position = Vector2(28, 0)
+position = Vector2(18, 2)
 
 [node name="WeaponSprite" type="ColorRect" parent="AimPivot"]
-offset_left = 16.0
-offset_right = 36.0
-offset_bottom = 6.0
+offset_left = 8.0
+offset_right = 18.0
+offset_bottom = 4.0
 color = Color(0.38870436, 1, 0.8240922, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 6)
 shape = SubResource("CircleShape2D_gmlin")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+limit_smoothed = true
+position_smoothing_enabled = true
