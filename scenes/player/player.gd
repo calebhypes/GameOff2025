@@ -8,15 +8,19 @@ extends CharacterBody2D
 @onready var shoot_point = $AimPivot/ShootPoint
 @onready var body_sprite = $BodySprite
 @onready var aim_pivot = $AimPivot
+@onready var tier1_cooldown = $Tier1Cooldown
 
 var hud: CanvasLayer = null
 var input_vector: = Vector2.ZERO
 var last_input_vector: = Vector2.ZERO
 var health: float = 100.0
+var can_shoot: bool = true;
 
 func _ready() -> void:
 	add_to_group("player")
 	await get_tree().process_frame
+	
+	tier1_cooldown.timeout.connect(_on_tier1_cooldown)
 	
 	hud = get_tree().get_first_node_in_group("hud")
 	health = max_health
@@ -65,12 +69,15 @@ func _physics_process(delta: float) -> void:
 	
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed and can_shoot:
 			shoot()
 
 func shoot() -> void:
 	if not wave_scene:
 		return
+	
+	can_shoot = false
+	tier1_cooldown.start()
 	
 	var wave = wave_scene.instantiate()
 	var shoot_direction = (get_global_mouse_position() - global_position).normalized()
@@ -85,3 +92,6 @@ func shoot() -> void:
 	
 	get_parent().add_child(wave)
 	wave.global_position = shoot_point.global_position
+
+func _on_tier1_cooldown() -> void:
+	can_shoot = true

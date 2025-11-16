@@ -33,5 +33,9 @@ position = Vector2(0, 6)
 shape = SubResource("CircleShape2D_gmlin")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.85, 0.85)
 limit_smoothed = true
 position_smoothing_enabled = true
+
+[node name="Tier1Cooldown" type="Timer" parent="."]
+wait_time = 0.65

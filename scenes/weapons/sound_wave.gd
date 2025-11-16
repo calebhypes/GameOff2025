@@ -76,7 +76,9 @@ func _on_body_entered(body: Node2D) -> void:
 
 func handle_wave_collision(other_wave: Area2D) -> void:
 	var other_strength = other_wave.wave_strength
-	if wave_strength == other_strength:
+	if other_wave.team == team:
+		return
+	elif wave_strength == other_strength:
 		spawn_cancel_effect()
 		other_wave.queue_free()
 		queue_free()
