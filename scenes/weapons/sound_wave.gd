@@ -8,6 +8,7 @@ extends Area2D
 var direction: Vector2 = Vector2.RIGHT
 var shooter: Node2D = null # Track who fired this projectile
 var team: String = "" # "player" or "enemy"
+var processed_frame: int = -1
 
 @onready var sprite = $Sprite2D
 @onready var collision_shape = $CollisionShape2D
@@ -75,6 +76,10 @@ func _on_body_entered(body: Node2D) -> void:
 		queue_free()
 
 func handle_wave_collision(other_wave: Area2D) -> void:
+	var current_frame = Engine.get_physics_frames()
+	if processed_frame == current_frame:
+		return
+	processed_frame = current_frame
 	var other_strength = other_wave.wave_strength
 	if other_wave.team == team:
 		return

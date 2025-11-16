@@ -3,6 +3,7 @@ extends CharacterBody2D
 @export var speed: float = 300.00
 @export var wave_scene: PackedScene
 @export var max_health: float = 100.0
+@export var debug_force_strength: int = 0
 
 @onready var shoot_point = $AimPivot/ShootPoint
 @onready var body_sprite = $BodySprite
@@ -108,6 +109,9 @@ func _on_shot_cooldown() -> void:
 	can_shoot = true
 
 func calculate_strength(time: float) -> int:
+	if debug_force_strength > 0:
+		return debug_force_strength
+	
 	if time >= 2.0:
 		return 3
 	elif time >= 1.0:
