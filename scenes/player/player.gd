@@ -2,25 +2,26 @@ extends CharacterBody2D
 
 @export var speed: float = 300.00
 @export var wave_scene: PackedScene
-@export var current_weapon_strength: int = 1 # Change in Inspector to test
 @export var max_health: float = 100.0
 
 @onready var shoot_point = $AimPivot/ShootPoint
 @onready var body_sprite = $BodySprite
 @onready var aim_pivot = $AimPivot
-@onready var tier1_cooldown = $Tier1Cooldown
+@onready var shot_cooldown = $ShotCooldown
 
 var hud: CanvasLayer = null
 var input_vector: = Vector2.ZERO
 var last_input_vector: = Vector2.ZERO
 var health: float = 100.0
-var can_shoot: bool = true;
+var can_shoot: bool = true
+var charge_time: float = 0.0
+var is_charging: bool = false
 
 func _ready() -> void:
 	add_to_group("player")
 	await get_tree().process_frame
 	
-	tier1_cooldown.timeout.connect(_on_tier1_cooldown)
+	shot_cooldown.timeout.connect(_on_shot_cooldown)
 	
 	hud = get_tree().get_first_node_in_group("hud")
 	health = max_health
@@ -53,6 +54,10 @@ func die() -> void:
 	# TODO: Game over screen
 	get_tree().reload_current_scene()
 
+func _process(delta: float) -> void:
+	if is_charging:
+		charge_time += delta
+
 func _physics_process(delta: float) -> void:
 	input_vector = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	velocity = input_vector * speed
@@ -68,21 +73,27 @@ func _physics_process(delta: float) -> void:
 		#body_sprite.flip_h = false # face right
 	
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed and can_shoot:
-			shoot()
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			is_charging = true
+		if not event.pressed:
+			is_charging = false
+			if can_shoot:
+				var strength = calculate_strength(charge_time)
+				shoot(strength)
 
-func shoot() -> void:
+func shoot(strength: int = 1) -> void:
 	if not wave_scene:
 		return
 	
 	can_shoot = false
-	tier1_cooldown.start()
+	charge_time = 0.0
+	shot_cooldown.start()
 	
 	var wave = wave_scene.instantiate()
 	var shoot_direction = (get_global_mouse_position() - global_position).normalized()
 	wave.direction = shoot_direction
-	wave.wave_strength = current_weapon_strength
+	wave.wave_strength = strength
 	print('Wave Strength: ', wave.wave_strength)
 	
 	wave.shooter = self
@@ -93,5 +104,13 @@ func shoot() -> void:
 	get_parent().add_child(wave)
 	wave.global_position = shoot_point.global_position
 
-func _on_tier1_cooldown() -> void:
+func _on_shot_cooldown() -> void:
 	can_shoot = true
+
+func calculate_strength(time: float) -> int:
+	if time >= 2.0:
+		return 3
+	elif time >= 1.0:
+		return 2
+	else:
+		return 1
