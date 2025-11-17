@@ -8,7 +8,7 @@ extends Area2D
 var direction: Vector2 = Vector2.RIGHT
 var shooter: Node2D = null # Track who fired this projectile
 var team: String = "" # "player" or "enemy"
-var processed_frame: int = -1
+var is_being_destroyed: bool = false
 
 @onready var sprite = $Sprite2D
 @onready var collision_shape = $CollisionShape2D
@@ -76,23 +76,37 @@ func _on_body_entered(body: Node2D) -> void:
 		queue_free()
 
 func handle_wave_collision(other_wave: Area2D) -> void:
-	var current_frame = Engine.get_physics_frames()
-	if processed_frame == current_frame:
+	if is_being_destroyed or other_wave.is_being_destroyed:
+		print(" -> Collision skipped (already destroyed)")
 		return
-	processed_frame = current_frame
+	
+	print(" === COLLISION ===")
+	print("  This wave: ID=", get_instance_id(), " Strength=", wave_strength, " Team=", team)
+	print("  Other wave: ID=", other_wave.get_instance_id(), " Strength=", other_wave.wave_strength, " Team=", other_wave.team)
+	
 	var other_strength = other_wave.wave_strength
 	if other_wave.team == team:
+		print(" -> Same team, ignoring")
 		return
 	elif wave_strength == other_strength:
+		print("  -> Equal strength, both cancel")
+		is_being_destroyed = true
+		other_wave.is_being_destroyed = true
 		spawn_cancel_effect()
 		other_wave.queue_free()
 		queue_free()
 	elif wave_strength > other_strength:
+		print("  -> This wave stronger: ", wave_strength, " - ", other_strength, " = ", wave_strength - other_strength)
+		other_wave.is_being_destroyed = true
 		wave_strength -= other_strength
 		update_size_by_strength()
 		other_wave.spawn_cancel_effect()
 		other_wave.queue_free()
 	else:
+		print("  -> Other wave stronger, this wave destroyed")
+		is_being_destroyed = true
+		other_wave.wave_strength -= wave_strength
+		other_wave.update_size_by_strength()
 		spawn_cancel_effect()
 		queue_free()
 
