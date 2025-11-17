@@ -9,6 +9,7 @@ extends CharacterBody2D
 @onready var body_sprite = $BodySprite
 @onready var aim_pivot = $AimPivot
 @onready var shot_cooldown = $ShotCooldown
+@onready var shoot_sound = $ShootSound
 
 var hud: CanvasLayer = null
 var input_vector: = Vector2.ZERO
@@ -76,12 +77,21 @@ func _physics_process(delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
-			is_charging = true
-		if not event.pressed:
-			is_charging = false
 			if can_shoot:
+				is_charging = true
+				charge_time = 0.0
+			else:
+				show_cooldown_feedback()
+		if not event.pressed:
+			if is_charging:
 				var strength = calculate_strength(charge_time)
 				shoot(strength)
+				is_charging = false
+				charge_time = 0.0
+
+func show_cooldown_feedback() -> void:
+	# TODO: Have this run animation and play cooldown noise
+	print("Weapon cooling down!")
 
 func shoot(strength: int = 1) -> void:
 	if not wave_scene:
@@ -90,6 +100,9 @@ func shoot(strength: int = 1) -> void:
 	can_shoot = false
 	charge_time = 0.0
 	shot_cooldown.start()
+	
+	if shoot_sound:
+		shoot_sound.play()
 	
 	var wave = wave_scene.instantiate()
 	var shoot_direction = (get_global_mouse_position() - global_position).normalized()
