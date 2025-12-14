@@ -10,6 +10,7 @@ extends CharacterBody2D
 @onready var aim_pivot = $AimPivot
 @onready var shot_cooldown = $ShotCooldown
 @onready var shoot_sound = $ShootSound
+@onready var weapon_sprite = $AimPivot/WeaponSprite
 
 var hud: CanvasLayer = null
 var input_vector: = Vector2.ZERO
@@ -90,7 +91,10 @@ func _input(event: InputEvent) -> void:
 				charge_time = 0.0
 
 func show_cooldown_feedback() -> void:
-	# TODO: Have this run animation and play cooldown noise
+	if weapon_sprite:
+		weapon_sprite.modulate = Color.RED
+		await get_tree().create_timer(0.1).timeout
+		weapon_sprite.modulate = Color(0.8, 0.2, 0.2)
 	print("Weapon cooling down!")
 
 func shoot(strength: int = 1) -> void:
@@ -101,7 +105,11 @@ func shoot(strength: int = 1) -> void:
 	charge_time = 0.0
 	shot_cooldown.start()
 	
+	if weapon_sprite:
+		weapon_sprite.modulate = Color(0.8,0.2, 0.2)
+	
 	if shoot_sound:
+		shoot_sound.pitch_scale = randf_range(0.95, 1.05)
 		shoot_sound.play()
 	
 	var wave = wave_scene.instantiate()
@@ -120,6 +128,9 @@ func shoot(strength: int = 1) -> void:
 
 func _on_shot_cooldown() -> void:
 	can_shoot = true
+	
+	if weapon_sprite:
+		weapon_sprite.modulate = Color.WHITE
 
 func calculate_strength(time: float) -> int:
 	if debug_force_strength > 0:
