@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dpwt1ujg0wo6q"
+path="res://.godot/imported/charge build up.wav-7927a99283cf5b1a4ce8e9321ad14836.sample"
+
+[deps]
+
+source_file="res://assets/audio/sfx/charge build up.wav"
+dest_files=["res://.godot/imported/charge build up.wav-7927a99283cf5b1a4ce8e9321ad14836.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

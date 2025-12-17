@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://y36m8neusfdf"]
+[gd_scene load_steps=6 format=3 uid="uid://y36m8neusfdf"]
 
 [ext_resource type="Script" uid="uid://ceadac1b5n3wn" path="res://scenes/player/player.gd" id="1_8afob"]
 [ext_resource type="PackedScene" uid="uid://dnw7ji3nugbqw" path="res://scenes/weapons/sound_wave.tscn" id="2_dovo2"]
 [ext_resource type="AudioStream" uid="uid://824c7fa1d62f" path="res://assets/audio/sfx/attack.wav" id="3_gmlin"]
+[ext_resource type="AudioStream" uid="uid://dpwt1ujg0wo6q" path="res://assets/audio/sfx/charge build up.wav" id="4_lvxji"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gmlin"]
 radius = 6.0
@@ -33,6 +34,23 @@ color = Color(0.38870436, 1, 0.8240922, 1)
 visible = false
 amount = 5
 
+[node name="ChargeParticles" type="CPUParticles2D" parent="AimPivot"]
+position = Vector2(16, 2)
+amount = 20
+lifetime = 0.2
+randomness = 0.3
+draw_order = 1
+emission_shape = 1
+emission_sphere_radius = 8.0
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 20.0
+initial_velocity_max = 40.0
+radial_accel_min = -50.0
+radial_accel_max = -20.0
+color = Color(0, 0.83137256, 1, 1)
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 6)
 shape = SubResource("CircleShape2D_gmlin")
@@ -48,4 +66,8 @@ wait_time = 0.5
 
 [node name="ShootSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("3_gmlin")
+volume_db = -10.0
+
+[node name="ChargingSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_lvxji")
 volume_db = -10.0
